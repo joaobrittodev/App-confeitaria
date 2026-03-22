@@ -1,0 +1,711 @@
+/* ==================== DESIGN SYSTEM HAND-DRAWN ====================  */
+
+:root {
+  /* Cores - Paleta Creme e Carvão */
+  --bg-cream: #f5f1e8;
+  --bg-light-cream: #faf8f3;
+  --text-charcoal: #2d2520;
+  --text-gray: #6b6359;
+  --accent-rust: #a85c3e;
+  --accent-rust-light: #d4a574;
+  --accent-rust-dark: #8b4513;
+  --border-dashed: #3d3530;
+  --shadow-soft: rgba(45, 37, 32, 0.08);
+  --text-primary: oklch(0.35 0.08 25);
+
+  /* Tipografia */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--text-charcoal);
+  font-family: "Courier Prime", monospace;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Customização da Scrollbar */
+/* Chrome, Safari, Edge */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--bg-light-cream);
+  border-left: 2px solid var(--border-dashed);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--accent-rust);
+  border-radius: 50px;
+  border: 2px solid var(--border-dashed);
+  box-shadow: inset 0 0 0 2px var(--bg-light-cream);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-rust-dark);
+  box-shadow: inset 0 0 0 2px var(--bg-cream);
+}
+
+/* Firefox */
+* {
+  scrollbar-color: var(--accent-rust) var(--bg-light-cream);
+  scrollbar-width: thin;
+}
+
+/* ==================== TIPOGRAFIA ====================  */
+
+h1, h2, h3 {
+  font-family: "Caveat", cursive;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  transform: rotate(-1deg);
+}
+
+h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  transform: rotate(0.5deg);
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+p, label {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-charcoal);
+}
+
+/* ==================== COMPONENTES ====================  */
+
+/* Container Principal */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+header {
+  background-color: var(--bg-light-cream);
+  padding: 2rem;
+  border-bottom: 3px dashed var(--border-dashed);
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+header::before {
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border-dashed);
+  border-radius: 50%;
+}
+
+header::after {
+  position: absolute;
+  bottom: -8px;
+  right: 20px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border-dashed);
+  border-radius: 50%;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+  transform: rotate(-5deg);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+.logo-text p {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+  margin: 0;
+}
+
+/* Botões */
+button, .btn {
+  background-color: var(--accent-rust);
+  color: white;
+  border: 2px solid var(--border-dashed);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  box-shadow: 3px 3px 0px var(--shadow-soft);
+  transform: rotate(-0.5deg);
+}
+
+button:hover, .btn:hover {
+  background-color: var(--accent-rust-dark);
+  transform: rotate(0.5deg) translateY(-2px);
+  box-shadow: 5px 5px 0px var(--shadow-soft);
+}
+
+button:active, .btn:active {
+  transform: rotate(-0.5deg) translateY(1px);
+  box-shadow: 2px 2px 0px var(--shadow-soft);
+}
+
+button.secondary {
+  background-color: transparent;
+  color: var(--accent-rust);
+  border: 2px solid var(--accent-rust);
+}
+
+button.secondary:hover {
+  background-color: var(--accent-rust);
+  color: white;
+}
+
+button.danger {
+  background-color: #d32f2f;
+}
+
+button.danger:hover {
+  background-color: #b71c1c;
+}
+
+/* Inputs e Forms */
+input, textarea, select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px dashed var(--border-dashed);
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  background-color: var(--bg-light-cream);
+  color: var(--text-charcoal);
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-rust);
+  box-shadow: 0 0 0 3px rgba(168, 92, 62, 0.1);
+}
+
+input::placeholder {
+  color: var(--text-gray);
+  opacity: 0.7;
+}
+
+/* Cards com Design Hand-Drawn */
+.card {
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  transform: rotate(0.5deg);
+  box-shadow: 4px 4px 0px var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: rotate(-0.5deg) translateY(-2px);
+  box-shadow: 6px 6px 0px var(--shadow-soft);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 15px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--border-dashed);
+  border-radius: 50%;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--border-dashed);
+  border-radius: 50%;
+}
+
+/* Seções */
+section {
+  margin-bottom: 3rem;
+}
+
+section h2 {
+  position: relative;
+  border-bottom: 2px dashed var(--border-dashed);
+  margin-bottom: 2rem;
+}
+
+section h2::before {
+  position: absolute;
+  left: -2rem;
+  font-size: 1.5rem;
+  opacity: 0.5;
+  transform: rotate(-15deg);
+}
+
+/* Search Box */
+.search-box {
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transform: rotate(-0.5deg);
+  box-shadow: 4px 4px 0px var(--shadow-soft);
+}
+
+.search-box input {
+  border: 2px solid var(--border-dashed);
+}
+
+/* Grid de Cards */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.grid-full {
+  grid-template-columns: 1fr;
+}
+
+/* Recipe Card */
+.recipe-card {
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  transform: rotate(-1deg);
+  box-shadow: 4px 4px 0px var(--shadow-soft);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.recipe-card:hover {
+  transform: rotate(0.5deg) translateY(-3px);
+  box-shadow: 6px 6px 0px var(--shadow-soft);
+}
+
+.recipe-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 1rem;
+}
+
+.recipe-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  flex: 1;
+}
+
+.recipe-cost {
+  background-color: var(--accent-rust);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  transform: rotate(2deg);
+}
+
+.recipe-description {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+}
+
+.recipe-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.recipe-actions button {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+}
+
+/* Form Container */
+.form-container {
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transform: rotate(0.5deg);
+  box-shadow: 4px 4px 0px var(--shadow-soft);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: var(--text-charcoal);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+}
+
+/* Ingredient List */
+.ingredient-list {
+  margin-top: 1rem;
+}
+
+.ingredient-item {
+  background-color: var(--bg-cream);
+  border-left: 4px solid var(--accent-rust);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+}
+
+.ingredient-item-info {
+  flex: 1;
+}
+
+.ingredient-item-name {
+  font-weight: 700;
+  color: var(--text-charcoal);
+}
+
+.ingredient-item-details {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  margin-top: 0.25rem;
+}
+
+.ingredient-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ingredient-item-actions button {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  transform: rotate(-0.5deg);
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  color: var(--text-gray);
+  margin-bottom: 1.5rem;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-gray);
+  font-family: var(--font-mono);
+}
+
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--accent-rust);
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Modal/Dialog */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(45, 37, 32, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--bg-light-cream);
+  border: 2px dashed var(--border-dashed);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 8px 8px 0px var(--shadow-soft);
+  transform: rotate(0.5deg);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-charcoal);
+  padding: 0;
+}
+
+/* PrimeReact Confirm Dialog Customization */
+.p-confirm-dialog {
+  background-color: var(--bg-light-cream) !important;
+  border: 3px dashed var(--border-dashed) !important;
+  border-radius: 16px !important;
+  box-shadow: 6px 6px 12px rgba(45, 37, 32, 0.15),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  padding: 0 !important;
+}
+
+.p-confirm-dialog .p-confirm-dialog-content {
+  padding: 2rem !important;
+  border-radius: 16px !important;
+}
+
+.p-confirm-dialog .p-dialog-header {
+  background: transparent !important;
+  border-bottom: 2px dashed var(--border-dashed) !important;
+  padding: 1.5rem 2rem !important;
+  margin: 0 !important;
+  border-radius: 13px 13px 0 0 !important;
+}
+
+.p-confirm-dialog .p-dialog-header-icons {
+  gap: 0.5rem !important;
+}
+
+.p-confirm-dialog .p-dialog-header-close {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: transparent !important;
+  border: 2px solid var(--border-dashed) !important;
+  color: var(--text-charcoal) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.p-confirm-dialog .p-dialog-header-close:hover {
+  background-color: var(--accent-rust) !important;
+  color: white !important;
+  transform: scale(1.1) !important;
+}
+
+.p-confirm-dialog .p-dialog-header-close::before {
+  content: '✕' !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+}
+
+.p-confirm-dialog .p-dialog-header-close .p-icon {
+  display: none !important;
+}
+
+.p-confirm-dialog .p-dialog-title {
+  font-family: "Caveat", cursive !important;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+
+.p-confirm-dialog .p-confirm-dialog-message {
+  margin: 0 !important;
+  color: var(--text-charcoal) !important;
+  font-size: 1rem !important;
+}
+
+.p-confirm-dialog .p-dialog-footer {
+  padding: 1.5rem 2rem !important;
+  border-top: 2px dashed var(--border-dashed) !important;
+  gap: 0.75rem !important;
+  justify-content: flex-end !important;
+  background: transparent !important;
+  border-radius: 0 0 13px 13px !important;
+}
+
+.confirm-dialog-btn {
+  padding: 0.5rem 1.2rem !important;
+  font-size: 0.9rem !important;
+  border-radius: 50px !important;
+  border: 2px solid var(--border-dashed) !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 3px 3px 0px var(--shadow-soft) !important;
+}
+
+.p-dialog .p-button.p-button-text.p-button-plain {
+  padding: 0.5rem 1.2rem !important;
+  font-size: 0.9rem !important;
+}
+
+.p-button.p-confirm-dialog-reject {
+  background-color: #f5f1e8 !important;
+  color: var(--accent-rust) !important;
+  border: 2px solid var(--accent-rust) !important;
+}
+
+.p-button.p-confirm-dialog-reject:hover {
+  background-color: var(--accent-rust) !important;
+  color: white !important;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  button, .btn {
+    width: 100%;
+  }
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Drafting Marks - Decoração */
+.drafting-mark {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 1px dashed var(--border-dashed);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.drafting-mark-corner {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border: 1px dashed var(--border-dashed);
+  opacity: 0.2;
+}
