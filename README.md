@@ -100,8 +100,8 @@ Agradecimentos especiais aos colaboladores que já colocaram as mãos no código
 <table>
   <tr>
     <td align="center">
-      <sub><b>jvbrl</b></sub><br>
-      <a href="https://github.com/jvbrl">https://github.com/joaobrittodev</a>
+      <sub><b>João Victor(creator)</b></sub><br>
+      <a href="https://github.com/joaobrittodev">João Victor</a>
     </td>
   </tr>
 </table>
