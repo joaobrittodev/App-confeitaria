@@ -1,5 +1,6 @@
 import { useState, useEffect, ReactNode, useRef } from 'react'
 import ConfirmDialog from '../components/ConfirmDialog'
+import IngredienteFormDialog, { IngredienteFormData } from '../components/IngredienteFormDialog'
 import Toast, { ToastHandle } from '../components/Toast'
 import Icon from '../components/Icon'
 
@@ -8,31 +9,37 @@ interface Ingrediente {
   nome: string
   quantidade: number
   preco: number
+  tipo: 'g' | 'ml' | 'unidade'
   criadoEm: string
-}
-
-interface FormData {
-  nome: string
-  quantidade: string
-  preco: string
 }
 
 export default function Ingredientes(): ReactNode {
   const toastRef = useRef<ToastHandle>(null)
   const [ingredientes, setIngredientes] = useState<Ingrediente[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [formData, setFormData] = useState<FormData>({
-    nome: '',
-    quantidade: '',
-    preco: ''
-  })
   const [submitting, setSubmitting] = useState<boolean>(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
   const [deleteIngredienteId, setDeleteIngredienteId] = useState<number | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [filteredIngredientes, setFilteredIngredientes] = useState<Ingrediente[]>([])
+  const [showIngredienteDialog, setShowIngredienteDialog] = useState<boolean>(false)
+  const [ingredienteDialogMode, setIngredienteDialogMode] = useState<'create' | 'edit'>('create')
+  const [editingIngrediente, setEditingIngrediente] = useState<Ingrediente | null>(null)
 
   useEffect(() => {
     fetchIngredientes()
   }, [])
+
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredIngredientes(ingredientes)
+    } else {
+      const filtered = ingredientes.filter(ing =>
+        ing.nome.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      setFilteredIngredientes(filtered)
+    }
+  }, [searchTerm, ingredientes])
 
   const fetchIngredientes = async (): Promise<void> => {
     try {
@@ -47,42 +54,44 @@ export default function Ingredientes(): ReactNode {
     }
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
+  const handleOpenCreateDialog = (): void => {
+    setEditingIngrediente(null)
+    setIngredienteDialogMode('create')
+    setShowIngredienteDialog(true)
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
+  const handleOpenEditDialog = (ingrediente: Ingrediente): void => {
+    setEditingIngrediente(ingrediente)
+    setIngredienteDialogMode('edit')
+    setShowIngredienteDialog(true)
+  }
 
-    if (!formData.nome || !formData.quantidade || !formData.preco) {
-      toastRef.current?.warn('Validação', 'Por favor, preencha todos os campos')
-      return
-    }
-
+  const handleSubmitIngrediente = async (formData: IngredienteFormData): Promise<void> => {
     try {
       setSubmitting(true)
-      const response = await fetch('/api/ingredientes', {
-        method: 'POST',
+      const method = ingredienteDialogMode === 'create' ? 'POST' : 'PATCH'
+      const url = ingredienteDialogMode === 'create' ? '/api/ingredientes' : `/api/ingredientes/${editingIngrediente?.id}`
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nome: formData.nome,
           quantidade: parseFloat(formData.quantidade),
-          preco: parseFloat(formData.preco)
+          preco: parseFloat(formData.preco),
+          tipo: formData.tipo
         })
       })
 
       if (response.ok) {
-        setFormData({ nome: '', quantidade: '', preco: '' })
         fetchIngredientes()
-        toastRef.current?.success('Sucesso', 'Ingrediente adicionado com sucesso!')
+        setShowIngredienteDialog(false)
+        setEditingIngrediente(null)
+        toastRef.current?.success('Sucesso', ingredienteDialogMode === 'create' ? 'Ingrediente adicionado com sucesso!' : 'Ingrediente atualizado com sucesso!')
       }
     } catch (error) {
-      console.error('Erro ao adicionar ingrediente:', error)
-      toastRef.current?.error('Erro', 'Erro ao adicionar ingrediente')
+      console.error('Erro ao salvar ingrediente:', error)
+      toastRef.current?.error('Erro', 'Erro ao salvar ingrediente')
     } finally {
       setSubmitting(false)
     }
@@ -112,57 +121,15 @@ export default function Ingredientes(): ReactNode {
       <Toast ref={toastRef} />
 
       <section>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Icon name="Plus" size={24} />
-          <h2>Adicionar Novo Ingrediente</h2>
-        </div>
-        
-        <div className="form-container">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="nome">Nome do Ingrediente</label>
-              <input
-                id="nome"
-                type="text"
-                name="nome"
-                value={formData.nome}
-                onChange={handleInputChange}
-                placeholder="Ex: Farinha de Trigo"
-              />
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div className="form-group">
-                <label htmlFor="quantidade">Quantidade (g/ml)</label>
-                <input
-                  id="quantidade"
-                  type="number"
-                  name="quantidade"
-                  value={formData.quantidade}
-                  onChange={handleInputChange}
-                  placeholder="Ex: 500"
-                  step="0.01"
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="preco">Preço (R$)</label>
-                <input
-                  id="preco"
-                  type="number"
-                  name="preco"
-                  value={formData.preco}
-                  onChange={handleInputChange}
-                  placeholder="Ex: 10.50"
-                  step="0.01"
-                />
-              </div>
-            </div>
-
-            <button type="submit" disabled={submitting}>
-              {submitting ? 'Adicionando...' : '✓ Adicionar Ingrediente'}
-            </button>
-          </form>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Icon name="Plus" size={24} />
+            <h2>Adicionar Novo Ingrediente</h2>
+          </div>
+          <button onClick={handleOpenCreateDialog} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Icon name="Plus" size={16} />
+            Novo Ingrediente
+          </button>
         </div>
       </section>
 
@@ -172,29 +139,45 @@ export default function Ingredientes(): ReactNode {
           <h2>Ingredientes Registrados</h2>
         </div>
 
+        <div className="search-box" style={{ marginBottom: '1.5rem' }}>
+          <input
+            type="text"
+            placeholder="Pesquisar ingrediente..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
         {loading ? (
           <div className="loading">
             <div className="spinner"></div>
             <p>Carregando ingredientes...</p>
           </div>
-        ) : ingredientes.length === 0 ? (
+        ) : filteredIngredientes.length === 0 ? (
           <div className="empty-state">
           <div className="empty-state-icon">
             <Icon name="Inbox" size={48} />
           </div>
-            <p>Nenhum ingrediente registrado ainda</p>
+            <p>{searchTerm ? 'Nenhum ingrediente encontrado' : 'Nenhum ingrediente registrado ainda'}</p>
           </div>
         ) : (
           <div className="ingredient-list">
-            {ingredientes.map(ingrediente => (
+            {filteredIngredientes.map(ingrediente => (
               <div key={ingrediente.id} className="ingredient-item">
                 <div className="ingredient-item-info">
                   <div className="ingredient-item-name">{ingrediente.nome}</div>
                   <div className="ingredient-item-details">
-                    {ingrediente.quantidade}g/ml • R$ {parseFloat(String(ingrediente.preco)).toFixed(2)}
+                    {ingrediente.quantidade}{ingrediente.tipo} • R$ {parseFloat(String(ingrediente.preco)).toFixed(2)}
                   </div>
                 </div>
                 <div className="ingredient-item-actions">
+                  <button
+                    onClick={() => handleOpenEditDialog(ingrediente)}
+                    className="secondary"
+                    title="Editar ingrediente"
+                  >
+                    <Icon name="Edit" size={16} />
+                  </button>
                   <button
                     onClick={() => handleDeleteIngrediente(ingrediente.id)}
                     className="danger"
@@ -222,6 +205,27 @@ export default function Ingredientes(): ReactNode {
         cancelLabel="Cancelar"
         confirmButtonClassName="p-button-danger"
         icon="pi pi-trash"
+      />
+
+      <IngredienteFormDialog
+        visible={showIngredienteDialog}
+        mode={ingredienteDialogMode}
+        initialData={
+          editingIngrediente
+            ? {
+                nome: editingIngrediente.nome,
+                quantidade: String(editingIngrediente.quantidade),
+                preco: String(editingIngrediente.preco),
+                tipo: editingIngrediente.tipo
+              }
+            : undefined
+        }
+        onConfirm={handleSubmitIngrediente}
+        onCancel={() => {
+          setShowIngredienteDialog(false)
+          setEditingIngrediente(null)
+        }}
+        isLoading={submitting}
       />
     </div>
   )
