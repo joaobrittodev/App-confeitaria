@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode, useRef } from 'react'
 import { NavigateParams } from '../App'
 import ConfirmDialog from '../components/ConfirmDialog'
+import QuantidadeDialog from '../components/QuantidadeDialog'
 import Toast, { ToastHandle } from '../components/Toast'
 import Icon from '../components/Icon'
 
@@ -39,6 +40,10 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
   const [custoTotal, setCustoTotal] = useState<number>(0)
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
   const [deleteReceitaId, setDeleteReceitaId] = useState<number | null>(null)
+  const [ingredientSearchTerm, setIngredientSearchTerm] = useState<string>('')
+  const [filteredIngredientsForSelection, setFilteredIngredientsForSelection] = useState<Ingrediente[]>([])
+  const [showQuantidadeDialog, setShowQuantidadeDialog] = useState<boolean>(false)
+  const [selectedIngredienteIdForQuantidade, setSelectedIngredienteIdForQuantidade] = useState<number | null>(null)
 
   useEffect(() => {
     fetchIngredientes()
@@ -48,6 +53,17 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
   useEffect(() => {
     calcularCustoTotal()
   }, [selectedIngredientes, ingredientes])
+
+  useEffect(() => {
+    if (ingredientSearchTerm.trim() === '') {
+      setFilteredIngredientsForSelection(ingredientes)
+    } else {
+      const filtered = ingredientes.filter(ing =>
+        ing.nome.toLowerCase().includes(ingredientSearchTerm.toLowerCase())
+      )
+      setFilteredIngredientsForSelection(filtered)
+    }
+  }, [ingredientSearchTerm, ingredientes])
 
   const fetchIngredientes = async (): Promise<void> => {
     try {
@@ -86,26 +102,25 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
 
   const handleAddIngrediente = (ingredienteId: number): void => {
     if (!selectedIngredientes.find(i => i.ingredienteId === ingredienteId)) {
+      setSelectedIngredienteIdForQuantidade(ingredienteId)
+      setShowQuantidadeDialog(true)
+    }
+  }
+
+  const handleConfirmQuantidade = (quantidade: number): void => {
+    if (selectedIngredienteIdForQuantidade) {
       setSelectedIngredientes([
         ...selectedIngredientes,
-        { ingredienteId, quantidadeUsada: 100 }
+        { ingredienteId: selectedIngredienteIdForQuantidade, quantidadeUsada: quantidade }
       ])
+      setShowQuantidadeDialog(false)
+      setSelectedIngredienteIdForQuantidade(null)
     }
   }
 
   const handleRemoveIngrediente = (ingredienteId: number): void => {
     setSelectedIngredientes(
       selectedIngredientes.filter(i => i.ingredienteId !== ingredienteId)
-    )
-  }
-
-  const handleChangeQuantidade = (ingredienteId: number, quantidade: string): void => {
-    setSelectedIngredientes(
-      selectedIngredientes.map(i =>
-        i.ingredienteId === ingredienteId
-          ? { ...i, quantidadeUsada: parseFloat(quantidade) || 0 }
-          : i
-      )
     )
   }
 
@@ -187,8 +202,16 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
 
             <div className="form-group">
               <label>Selecionar Ingredientes</label>
+              <div className="search-box" style={{ marginBottom: '1rem' }}>
+                <input
+                  type="text"
+                  placeholder="Pesquisar ingrediente..."
+                  value={ingredientSearchTerm}
+                  onChange={(e) => setIngredientSearchTerm(e.target.value)}
+                />
+              </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '0.75rem' }}>
-                {ingredientes.map(ing => (
+                {filteredIngredientsForSelection.slice(0, 6).map(ing => (
                   <button
                     key={ing.id}
                     type="button"
@@ -204,31 +227,28 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
 
             {selectedIngredientes.length > 0 && (
               <div className="form-group">
-                <label>Quantidades dos Ingredientes Selecionados</label>
+                <label>Ingredientes Selecionados</label>
                 <div className="ingredient-list">
                   {selectedIngredientes.map(sel => {
                     const ing = ingredientes.find(i => i.id === sel.ingredienteId)
                     return (
-                      <div key={sel.ingredienteId} style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-                        <div style={{ flex: 1 }}>
-                          <label style={{ fontSize: '0.9rem' }}>{ing?.nome}</label>
-                          <input
-                            type="number"
-                            value={sel.quantidadeUsada}
-                            onChange={(e) => handleChangeQuantidade(sel.ingredienteId, e.target.value)}
-                            placeholder="Quantidade"
-                            step="0.01"
-                            style={{ marginTop: '0.25rem' }}
-                          />
+                      <div key={sel.ingredienteId} className="ingredient-item">
+                        <div className="ingredient-item-info">
+                          <div className="ingredient-item-name">{ing?.nome}</div>
+                          <div className="ingredient-item-details">
+                            {sel.quantidadeUsada} unidades
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveIngrediente(sel.ingredienteId)}
-                          className="danger"
-                          style={{ padding: '0.5rem 1rem' }}
-                        >
-                          ✕
-                        </button>
+                        <div className="ingredient-item-actions">
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveIngrediente(sel.ingredienteId)}
+                            className="danger"
+                            title="Remover ingrediente"
+                          >
+                            <Icon name="Trash2" size={16} />
+                          </button>
+                        </div>
                       </div>
                     )
                   })}
@@ -236,13 +256,13 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
               </div>
             )}
 
-            <div style={{ 
-              backgroundColor: '#f5f1e8', 
-              padding: '1rem', 
-              borderRadius: '8px', 
+            <div style={{
+              backgroundColor: '#f5f1e8',
+              padding: '1rem',
+              borderRadius: '8px',
               marginBottom: '1rem',
               textAlign: 'center',
-              border: '2px dashed #3d3530'
+              border: '2px solid #3d3530'
             }}>
               <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem', color: '#6b6359' }}>Custo Total da Receita</p>
               <h3 style={{ margin: 0, fontSize: '2rem', color: '#a85c3e' }}>
@@ -325,6 +345,16 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
         cancelLabel="Cancelar"
         confirmButtonClassName="p-button-danger"
         icon="pi pi-trash"
+      />
+
+      <QuantidadeDialog
+        visible={showQuantidadeDialog}
+        ingredienteName={selectedIngredienteIdForQuantidade ? (ingredientes.find(i => i.id === selectedIngredienteIdForQuantidade)?.nome || '') : ''}
+        onConfirm={handleConfirmQuantidade}
+        onCancel={() => {
+          setShowQuantidadeDialog(false)
+          setSelectedIngredienteIdForQuantidade(null)
+        }}
       />
     </div>
   )
