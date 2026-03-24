@@ -44,11 +44,23 @@ export default function Home({ onNavigate }: HomeProps): ReactNode {
     try {
       setLoading(true)
       const response = await fetch('/api/receitas')
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Erro do servidor:', errorData)
+        setReceitas([])
+        setFilteredReceitas([])
+        toastRef.current?.error('Erro', 'Erro ao buscar receitas do servidor')
+        return
+      }
+
       const data: Receita[] = await response.json()
-      setReceitas(data)
-      setFilteredReceitas(data)
+      setReceitas(Array.isArray(data) ? data : [])
+      setFilteredReceitas(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error('Erro ao buscar receitas:', error)
+      setReceitas([])
+      setFilteredReceitas([])
     } finally {
       setLoading(false)
     }

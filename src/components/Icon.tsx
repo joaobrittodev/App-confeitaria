@@ -9,10 +9,11 @@ import {
   Package, 
   ClipboardList, 
   Inbox,
-  Search
+  Search,
+  AlertCircle
 } from 'lucide-react';
 
-type IconName = 'Plus' | 'X' | 'Check' | 'Edit' | 'Trash2' | 'Eye' | 'Package' | 'ClipboardList' | 'Inbox' | 'Search';
+type IconName = 'Plus' | 'X' | 'Check' | 'Edit' | 'Trash2' | 'Eye' | 'Package' | 'ClipboardList' | 'Inbox' | 'Search' | 'AlertCircle';
 
 const iconMap: Record<IconName, React.ComponentType<any>> = {
   Plus,
@@ -24,7 +25,8 @@ const iconMap: Record<IconName, React.ComponentType<any>> = {
   Package,
   ClipboardList,
   Inbox,
-  Search
+  Search,
+  AlertCircle
 };
 
 export interface IconProps {

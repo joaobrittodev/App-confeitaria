@@ -253,7 +253,6 @@ input::placeholder {
 }
 
 .card::before {
-  content: '';
   position: absolute;
   top: -6px;
   left: 15px;
@@ -264,7 +263,6 @@ input::placeholder {
 }
 
 .card::after {
-  content: '';
   position: absolute;
   bottom: -6px;
   right: 15px;

@@ -52,6 +52,33 @@ export default function ReceitaDetail({ receitaId, onBack }: ReceitaDetailProps)
     }
   }
 
+  const formatDate = (dateString: string | Date | any): string => {
+    try {
+      let date: Date;
+
+      if (dateString instanceof Date) {
+        date = dateString;
+      } else if (typeof dateString === 'object' && dateString !== null) {
+        // Pode ser um objeto Timestamp do MySQL2
+        date = new Date(dateString);
+      } else {
+        date = new Date(dateString);
+      }
+
+      if (isNaN(date.getTime())) {
+        return 'Data inválida';
+      }
+
+      return date.toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return 'Data inválida';
+    }
+  }
+
   if (loading) {
     return (
       <div className="loading">
@@ -85,7 +112,7 @@ export default function ReceitaDetail({ receitaId, onBack }: ReceitaDetailProps)
             <div>
               <h2 style={{ margin: 0, marginBottom: '0.5rem' }}>{receita.nomeReceita}</h2>
               <p style={{ margin: 0, color: '#6b6359' }}>
-                Criada em {new Date(receita.criadoEm).toLocaleDateString('pt-BR')}
+                Criada em {formatDate(receita.criadoEm)}
               </p>
             </div>
             <div className="recipe-cost" style={{ fontSize: '1.2rem', padding: '1rem 1.5rem' }}>

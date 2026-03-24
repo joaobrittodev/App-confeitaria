@@ -45,7 +45,7 @@ async function initializeDatabase(): Promise<void> {
         nome VARCHAR(255) NOT NULL,
         quantidade DECIMAL(10, 2) NOT NULL,
         preco DECIMAL(10, 2) NOT NULL,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -55,7 +55,7 @@ async function initializeDatabase(): Promise<void> {
         id INT AUTO_INCREMENT PRIMARY KEY,
         nomeReceita VARCHAR(255) NOT NULL,
         custoTotal DECIMAL(10, 2) NOT NULL DEFAULT 0,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        criadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -89,7 +89,14 @@ app.get('/api/ingredientes', async (_req: Request, res: Response): Promise<void>
       'SELECT * FROM ingredientes ORDER BY criadoEm DESC'
     );
     connection.release();
-    res.json(ingredientes);
+    const formatted = (ingredientes as any[]).map(ing => ({
+      id: ing.id,
+      nome: ing.nome,
+      quantidade: ing.quantidade,
+      preco: ing.preco,
+      criadoEm: ing.criadoEm
+    }));
+    res.json(formatted);
   } catch (error) {
     console.error('Erro ao listar ingredientes:', error);
     res.status(500).json({ error: 'Erro ao listar ingredientes' });
@@ -151,8 +158,14 @@ app.get('/api/receitas', async (_req: Request, res: Response): Promise<void> => 
       'SELECT * FROM receitas ORDER BY criadoEm DESC'
     );
     connection.release();
-    console.log('📋 Receitas fetched:', receitas);
-    res.json(receitas as Receita[]);
+    const formatted = (receitas as any[]).map(r => ({
+      id: r.id,
+      nomeReceita: r.nomeReceita,
+      custoTotal: r.custoTotal,
+      criadoEm: r.criadoEm
+    }));
+    console.log('📋 Receitas fetched:', formatted);
+    res.json(formatted);
   } catch (error) {
     console.error('❌ Erro ao listar receitas:', error);
     res.status(500).json({ error: 'Erro ao listar receitas', details: String(error) });
@@ -170,7 +183,13 @@ app.get('/api/receitas/search/:nome', async (req: Request, res: Response): Promi
       [`%${nome}%`]
     );
     connection.release();
-    res.json(receitas);
+    const formatted = (receitas as any[]).map(r => ({
+      id: r.id,
+      nomeReceita: r.nomeReceita,
+      custoTotal: r.custoTotal,
+      criadoEm: r.criadoEm
+    }));
+    res.json(formatted);
   } catch (error) {
     console.error('Erro ao buscar receitas:', error);
     res.status(500).json({ error: 'Erro ao buscar receitas' });
@@ -183,7 +202,7 @@ app.get('/api/receitas/:id', async (req: Request, res: Response): Promise<void> 
 
   try {
     const connection = await pool.getConnection();
-    
+
     const [receitas] = await connection.execute(
       'SELECT * FROM receitas WHERE id = ?',
       [id]
@@ -204,9 +223,20 @@ app.get('/api/receitas/:id', async (req: Request, res: Response): Promise<void> 
 
     connection.release();
 
+    const receita = (receitas as any[])[0];
     res.json({
-      ...(receitas as any[])[0],
-      ingredientes,
+      id: receita.id,
+      nomeReceita: receita.nomeReceita,
+      custoTotal: receita.custoTotal,
+      criadoEm: receita.criadoEm,
+      ingredientes: (ingredientes as any[]).map(ing => ({
+        id: ing.id,
+        nome: ing.nome,
+        quantidade: ing.quantidade,
+        preco: ing.preco,
+        quantidadeUsada: ing.quantidadeUsada,
+        criadoEm: ing.criadoEm
+      }))
     });
   } catch (error) {
     console.error('Erro ao obter receita:', error);
@@ -267,6 +297,66 @@ app.post('/api/receitas', async (req: Request, res: Response): Promise<void> => 
   } catch (error) {
     console.error('Erro ao criar receita:', error);
     res.status(500).json({ error: 'Erro ao criar receita' });
+  }
+});
+
+// PATCH - Editar receita
+app.patch('/api/receitas/:id', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { nomeReceita, ingredientes } = req.body;
+
+  if (!nomeReceita || !ingredientes || ingredientes.length === 0) {
+    res.status(400).json({ error: 'Dados inválidos' });
+    return;
+  }
+
+  try {
+    const connection = await pool.getConnection();
+
+    // Calcular custo total
+    let custoTotal = 0;
+    for (const ing of ingredientes) {
+      const [ingrediente] = await connection.execute(
+        'SELECT preco, quantidade FROM ingredientes WHERE id = ?',
+        [ing.ingredienteId]
+      );
+      if ((ingrediente as any[]).length > 0) {
+        const precoPorUnidade = (ingrediente as any[])[0].preco / (ingrediente as any[])[0].quantidade;
+        custoTotal += precoPorUnidade * ing.quantidadeUsada;
+      }
+    }
+
+    // Atualizar receita
+    await connection.execute(
+      'UPDATE receitas SET nomeReceita = ?, custoTotal = ? WHERE id = ?',
+      [nomeReceita, custoTotal, id]
+    );
+
+    // Deletar ingredientes antigos
+    await connection.execute(
+      'DELETE FROM receita_ingredientes WHERE receitaId = ?',
+      [id]
+    );
+
+    // Inserir novos ingredientes
+    for (const ing of ingredientes) {
+      await connection.execute(
+        'INSERT INTO receita_ingredientes (receitaId, ingredienteId, quantidadeUsada) VALUES (?, ?, ?)',
+        [id, ing.ingredienteId, ing.quantidadeUsada]
+      );
+    }
+
+    connection.release();
+
+    res.json({
+      id,
+      nomeReceita,
+      custoTotal,
+      ingredientes,
+    });
+  } catch (error) {
+    console.error('Erro ao editar receita:', error);
+    res.status(500).json({ error: 'Erro ao editar receita' });
   }
 });
 

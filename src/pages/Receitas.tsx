@@ -44,6 +44,7 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
   const [filteredIngredientsForSelection, setFilteredIngredientsForSelection] = useState<Ingrediente[]>([])
   const [showQuantidadeDialog, setShowQuantidadeDialog] = useState<boolean>(false)
   const [selectedIngredienteIdForQuantidade, setSelectedIngredienteIdForQuantidade] = useState<number | null>(null)
+  const [editingReceitaId, setEditingReceitaId] = useState<number | null>(null)
 
   useEffect(() => {
     fetchIngredientes()
@@ -134,8 +135,11 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
 
     try {
       setSubmitting(true)
-      const response = await fetch('/api/receitas', {
-        method: 'POST',
+      const method = editingReceitaId ? 'PATCH' : 'POST'
+      const url = editingReceitaId ? `/api/receitas/${editingReceitaId}` : '/api/receitas'
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nomeReceita,
@@ -147,12 +151,18 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
         setNomeReceita('')
         setSelectedIngredientes([])
         setCustoTotal(0)
+        setEditingReceitaId(null)
         fetchReceitas()
-        toastRef.current?.success('Sucesso', 'Receita criada com sucesso!')
+
+        if (editingReceitaId) {
+          toastRef.current?.success('Sucesso', 'Receita atualizada com sucesso!')
+        } else {
+          toastRef.current?.success('Sucesso', 'Receita criada com sucesso!')
+        }
       }
     } catch (error) {
-      console.error('Erro ao criar receita:', error)
-      toastRef.current?.error('Erro', 'Erro ao criar receita')
+      console.error('Erro ao salvar receita:', error)
+      toastRef.current?.error('Erro', 'Erro ao salvar receita')
     } finally {
       setSubmitting(false)
     }
@@ -177,6 +187,63 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
     }
   }
 
+  const handleOpenEditDialog = (receita: Receita): void => {
+    setEditingReceitaId(receita.id)
+    setNomeReceita(receita.nomeReceita)
+
+    const fetchReceitaIngredientes = async () => {
+      try {
+        const response = await fetch(`/api/receitas/${receita.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          const mappedIngredientes = data.ingredientes.map((ing: any) => ({
+            ingredienteId: ing.id,
+            quantidadeUsada: ing.quantidadeUsada
+          }))
+          setSelectedIngredientes(mappedIngredientes)
+        }
+      } catch (error) {
+        console.error('Erro ao carregar ingredientes:', error)
+      }
+    }
+
+    fetchReceitaIngredientes()
+  }
+
+  const handleCancelEdit = (): void => {
+    setEditingReceitaId(null)
+    setNomeReceita('')
+    setSelectedIngredientes([])
+    setCustoTotal(0)
+  }
+
+  const formatDate = (dateString: string | Date | any): string => {
+    try {
+      let date: Date;
+
+      if (dateString instanceof Date) {
+        date = dateString;
+      } else if (typeof dateString === 'object' && dateString !== null) {
+        // Pode ser um objeto Timestamp do MySQL2
+        date = new Date(dateString);
+      } else {
+        date = new Date(dateString);
+      }
+
+      if (isNaN(date.getTime())) {
+        return 'Data inválida';
+      }
+
+      return date.toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+    } catch {
+      return 'Data inválida';
+    }
+  }
+
   return (
     <div>
       <Toast ref={toastRef} />
@@ -184,8 +251,16 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
       <section>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Icon name="Plus" size={24} />
-          <h2>Criar Nova Receita</h2>
+          <h2>{editingReceitaId ? 'Editar Receita' : 'Criar Nova Receita'}</h2>
         </div>
+
+        {editingReceitaId && (
+          <div style={{ marginBottom: '1.5rem' }}>
+            <button onClick={handleCancelEdit} className="secondary">
+              ← Cancelar Edição
+            </button>
+          </div>
+        )}
 
         <div className="form-container">
           <form onSubmit={handleSubmit}>
@@ -271,7 +346,7 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
             </div>
 
             <button type="submit" disabled={submitting || selectedIngredientes.length === 0}>
-              {submitting ? 'Criando...' : '✓ Criar Receita'}
+              {submitting ? (editingReceitaId ? 'Atualizando...' : 'Criando...') : editingReceitaId ? '✓ Atualizar Receita' : '✓ Criar Receita'}
             </button>
           </form>
         </div>
@@ -306,7 +381,7 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
                   </div>
                 </div>
                 <p className="recipe-description">
-                  Clique para ver detalhes
+                  Criada em {formatDate(receita.criadoEm)}
                 </p>
                 <div className="recipe-actions">
                   <button
@@ -316,6 +391,14 @@ export default function Receitas({ onNavigate }: ReceitasProps): ReactNode {
                   >
                     <Icon name="Eye" size={16} />
                     Ver Detalhes
+                  </button>
+                  <button
+                    onClick={() => handleOpenEditDialog(receita)}
+                    className="secondary"
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <Icon name="Edit" size={16} />
+                    Editar
                   </button>
                   <button
                     onClick={() => handleDeleteReceita(receita.id)}
