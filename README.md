@@ -11,9 +11,13 @@
 
 O projeto está em constante evolução. As próximas entregas previstas incluem:
 
-- [ x ] Aprimorar Visualização de Dispositivos Moveis na Criação de Receita
-- [ x ] Colocar opção de unidade no cadastro de ingredientes
-- [ x ] Opção de Pesquisar Ingredientes na aba de Criação de Receitas
+- [x] Aprimorar Visualização de Dispositivos Moveis na Criação de Receita
+- [x] Colocar opção de unidade no cadastro de ingredientes
+- [x] Opção de Pesquisar Ingredientes na aba de Criação de Receitas
+- [ ] Tela de autenticação(cadastro, login, recuperar senha)
+- [ ] Receitas(Descrição e quem criou a receita)
+- [ ] Personalização de perfil(porcentagem de mão de obra e meios de contato) 
+- [ ] Perfil de usuario(Meios de contato, Receitas criadas pelo usuario)
 
 ## 💻 Pré-requisitos
 
