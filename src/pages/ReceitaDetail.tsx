@@ -158,12 +158,12 @@ export default function ReceitaDetail({ receitaId, onBack }: ReceitaDetailProps)
                   const percentual = (custoIngrediente / receita.custoTotal * 100).toFixed(1)
                   
                   return (
-                    <div key={idx} style={{ 
-                      display: 'flex', 
+                    <div key={idx} style={{
+                      display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       paddingBottom: '1rem',
-                      borderBottom: '1px dashed #3d3530'
+                      borderBottom: '1px solid #3d3530'
                     }}>
                       <div>
                         <p style={{ margin: 0, fontWeight: 'bold', marginBottom: '0.25rem' }}>
