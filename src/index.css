@@ -104,7 +104,7 @@ p, label {
 header {
   background-color: var(--bg-light-cream);
   padding: 2rem;
-  border-bottom: 3px dashed var(--border-dashed);
+  border-bottom: 3px solid var(--border-dashed);
   margin-bottom: 2rem;
   position: relative;
 }
@@ -168,7 +168,7 @@ header::after {
 button, .btn {
   background-color: var(--accent-rust);
   color: white;
-  border: 2px solid var(--border-dashed);
+  border: 2px solid var(--accent-rust);
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
   font-family: var(--font-mono);
@@ -214,7 +214,7 @@ button.danger:hover {
 input, textarea, select {
   width: 100%;
   padding: 0.75rem;
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 8px;
   font-family: var(--font-mono);
   font-size: 0.95rem;
@@ -237,7 +237,7 @@ input::placeholder {
 /* Cards com Design Hand-Drawn */
 .card {
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
@@ -281,7 +281,7 @@ section {
 
 section h2 {
   position: relative;
-  border-bottom: 2px dashed var(--border-dashed);
+  border-bottom: 2px solid var(--border-dashed);
   margin-bottom: 2rem;
 }
 
@@ -296,7 +296,7 @@ section h2::before {
 /* Search Box */
 .search-box {
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -323,7 +323,7 @@ section h2::before {
 /* Recipe Card */
 .recipe-card {
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   padding: 1.5rem;
   position: relative;
@@ -384,7 +384,7 @@ section h2::before {
 /* Form Container */
 .form-container {
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -456,7 +456,7 @@ section h2::before {
   text-align: center;
   padding: 3rem 1rem;
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   transform: rotate(-0.5deg);
 }
@@ -511,7 +511,7 @@ section h2::before {
 
 .modal {
   background-color: var(--bg-light-cream);
-  border: 2px dashed var(--border-dashed);
+  border: 2px solid var(--border-dashed);
   border-radius: 12px;
   padding: 2rem;
   max-width: 500px;
@@ -539,7 +539,7 @@ section h2::before {
 /* PrimeReact Confirm Dialog Customization */
 .p-confirm-dialog {
   background-color: var(--bg-light-cream) !important;
-  border: 3px dashed var(--border-dashed) !important;
+  border: 3px;
   border-radius: 16px !important;
   box-shadow: 6px 6px 12px rgba(45, 37, 32, 0.15),
               inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
@@ -553,7 +553,7 @@ section h2::before {
 
 .p-confirm-dialog .p-dialog-header {
   background: transparent !important;
-  border-bottom: 2px dashed var(--border-dashed) !important;
+  border-bottom: 2px;
   padding: 1.5rem 2rem !important;
   margin: 0 !important;
   border-radius: 13px 13px 0 0 !important;
@@ -571,7 +571,7 @@ section h2::before {
   align-items: center !important;
   justify-content: center !important;
   background-color: transparent !important;
-  border: 2px solid var(--border-dashed) !important;
+  border: 2px ;
   color: var(--text-charcoal) !important;
   padding: 0 !important;
   margin: 0 !important;
@@ -609,7 +609,7 @@ section h2::before {
 
 .p-confirm-dialog .p-dialog-footer {
   padding: 1.5rem 2rem !important;
-  border-top: 2px dashed var(--border-dashed) !important;
+  border-top: 2px ;
   gap: 0.75rem !important;
   justify-content: flex-end !important;
   background: transparent !important;
@@ -620,7 +620,7 @@ section h2::before {
   padding: 0.5rem 1.2rem !important;
   font-size: 0.9rem !important;
   border-radius: 50px !important;
-  border: 2px solid var(--border-dashed) !important;
+  border: 2px solid var(--accent-rust) !important;
   font-family: var(--font-mono) !important;
   font-weight: 700 !important;
   cursor: pointer !important;
@@ -697,7 +697,6 @@ section h2::before {
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 1px dashed var(--border-dashed);
   opacity: 0.3;
   pointer-events: none;
 }
@@ -706,6 +705,5 @@ section h2::before {
   position: absolute;
   width: 15px;
   height: 15px;
-  border: 1px dashed var(--border-dashed);
   opacity: 0.2;
 }
