@@ -13,3 +13,5 @@ yarn-error.log*
 *.swo
 *~
 .env
+SDD.md
+tsconfig.server.json
