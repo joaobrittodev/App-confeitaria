@@ -536,6 +536,31 @@ section h2::before {
   padding: 0;
 }
 
+.dialog-close-btn {
+  background-color: var(--accent-rust);
+  color: white;
+  border: 2px solid var(--accent-rust);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.dialog-close-btn:hover {
+  background-color: var(--accent-rust-dark);
+  transform: rotate(0.5deg) scale(1.05);
+}
+
+.dialog-close-btn:active {
+  transform: rotate(-0.5deg) scale(0.95);
+}
+
 /* PrimeReact Confirm Dialog Customization */
 .p-confirm-dialog {
   background-color: var(--bg-light-cream) !important;
@@ -564,30 +589,34 @@ section h2::before {
 }
 
 .p-confirm-dialog .p-dialog-header-close {
-  width: 32px !important;
-  height: 32px !important;
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  background-color: transparent !important;
-  border: 2px ;
-  color: var(--text-charcoal) !important;
+  background-color: var(--accent-rust) !important;
+  border: 2px solid var(--accent-rust) !important;
+  color: white !important;
   padding: 0 !important;
   margin: 0 !important;
   transition: all 0.2s ease !important;
 }
 
 .p-confirm-dialog .p-dialog-header-close:hover {
-  background-color: var(--accent-rust) !important;
+  background-color: var(--accent-rust-dark) !important;
   color: white !important;
   transform: scale(1.1) !important;
 }
 
 .p-confirm-dialog .p-dialog-header-close::before {
   content: '✕' !important;
-  font-size: 1.2rem !important;
+  font-size: 1.4rem !important;
   font-weight: 700 !important;
+  color: white !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .p-confirm-dialog .p-dialog-header-close .p-icon {

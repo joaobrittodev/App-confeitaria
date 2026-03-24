@@ -94,9 +94,20 @@ const IngredienteFormDialog: React.FC<IngredienteFormDialogProps> = ({
     <Dialog
       visible={visible}
       onHide={handleCancel}
-      header={title}
+      header={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <span>{title}</span>
+          <button
+            onClick={handleCancel}
+            className="dialog-close-btn"
+            title="Fechar"
+          >
+            <Icon name="X" size={20} color="white" />
+          </button>
+        </div>
+      }
       modal
-      closable={true}
+      closable={false}
       draggable={false}
       resizable={false}
       breakpoints={{ '960px': '75vw', '640px': '90vw' }}

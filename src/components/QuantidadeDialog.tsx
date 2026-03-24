@@ -41,9 +41,20 @@ const QuantidadeDialog: React.FC<QuantidadeDialogProps> = ({
     <Dialog
       visible={visible}
       onHide={handleCancel}
-      header={`Adicionar Quantidade - ${ingredienteName}`}
+      header={
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <span>{`Adicionar Quantidade - ${ingredienteName}`}</span>
+          <button
+            onClick={handleCancel}
+            className="dialog-close-btn"
+            title="Fechar"
+          >
+            <Icon name="X" size={20} color="white" />
+          </button>
+        </div>
+      }
       modal
-      closable={true}
+      closable={false}
       draggable={false}
       resizable={false}
       breakpoints={{ '960px': '75vw', '640px': '90vw' }}
