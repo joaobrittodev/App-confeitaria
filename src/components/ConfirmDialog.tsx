@@ -47,6 +47,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       rejectLabel={cancelLabel}
       acceptClassName={`${confirmButtonClassName} confirm-dialog-btn`}
       rejectClassName="confirm-dialog-btn"
+      closable={true}
       draggable={false}
       resizable={false}
       modal

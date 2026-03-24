@@ -43,6 +43,7 @@ const QuantidadeDialog: React.FC<QuantidadeDialogProps> = ({
       onHide={handleCancel}
       header={`Adicionar Quantidade - ${ingredienteName}`}
       modal
+      closable={true}
       draggable={false}
       resizable={false}
       breakpoints={{ '960px': '75vw', '640px': '90vw' }}
@@ -65,6 +66,7 @@ const QuantidadeDialog: React.FC<QuantidadeDialogProps> = ({
             autoFocus
             style={{ width: '100%', padding: '0.75rem', fontSize: '1rem' }}
           />
+          
         </div>
 
         <div style={{

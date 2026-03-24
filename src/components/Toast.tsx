@@ -21,7 +21,8 @@ const Toast = React.forwardRef<ToastHandle>((_, ref) => {
       severity,
       summary: title,
       detail: message,
-      life: 3000,
+      life: 4000,
+      closable: true,
     });
   }, []);
 
@@ -49,7 +50,17 @@ const Toast = React.forwardRef<ToastHandle>((_, ref) => {
     warn,
   }), [show, success, error, info, warn]);
 
-  return <PrimeToast ref={toastRef} />;
+  return (
+    <PrimeToast
+      ref={toastRef}
+      style={{
+        top: '1rem',
+        right: '1rem',
+        zIndex: 9999,
+      }}
+      position="top-right"
+    />
+  );
 });
 
 Toast.displayName = 'Toast';

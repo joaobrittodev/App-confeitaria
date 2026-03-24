@@ -1,7 +1,29 @@
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
+import { 
+  Plus, 
+  X, 
+  Check, 
+  Edit, 
+  Trash2, 
+  Eye, 
+  Package, 
+  ClipboardList, 
+  Inbox 
+} from 'lucide-react';
 
-type IconName = keyof typeof LucideIcons;
+type IconName = 'Plus' | 'X' | 'Check' | 'Edit' | 'Trash2' | 'Eye' | 'Package' | 'ClipboardList' | 'Inbox';
+
+const iconMap: Record<IconName, React.ComponentType<any>> = {
+  Plus,
+  X,
+  Check,
+  Edit,
+  Trash2,
+  Eye,
+  Package,
+  ClipboardList,
+  Inbox,
+};
 
 export interface IconProps {
   name: IconName;
@@ -22,14 +44,7 @@ const Icon: React.FC<IconProps> = ({
   onClick,
   title,
 }) => {
-  const IconComponent = LucideIcons[name] as React.ComponentType<{
-    size?: number | string;
-    color?: string;
-    strokeWidth?: number;
-    className?: string;
-    onClick?: () => void;
-    title?: string;
-  }>;
+  const IconComponent = iconMap[name];
 
   if (!IconComponent) {
     console.warn(`Icon "${name}" not found in lucide-react`);
