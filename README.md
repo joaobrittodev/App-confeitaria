@@ -11,9 +11,9 @@
 
 O projeto está em constante evolução. As próximas entregas previstas incluem:
 
-- [ ] Aprimorar Visualização de Dispositivos Moveis na Criação de Receita
-- [ ] Colocar opção de unidade no cadastro de ingredientes
-- [ ] Opção de Pesquisar Ingredientes na aba de Criação de Receitas
+- [ x ] Aprimorar Visualização de Dispositivos Moveis na Criação de Receita
+- [ x ] Colocar opção de unidade no cadastro de ingredientes
+- [ x ] Opção de Pesquisar Ingredientes na aba de Criação de Receitas
 
 ## 💻 Pré-requisitos
 
